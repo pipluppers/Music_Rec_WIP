@@ -1,0 +1,84 @@
+target_data = full_train['target']
+gender_data = full_train['gender']
+age_data = full_train['bd']
+#print(target_data)
+count_0 = 0
+count_1 = 0
+count_f0 = 0
+count_m0 = 0
+count_f1 = 0
+count_m1 = 0
+count_lessthanmean_0 = 0
+count_morethanmean_0 = 0
+count_lessthanmean_1 = 0
+count_morethanmean_1 = 0
+print("Start")
+for x in range(full_train.shape[0]):
+    if (target_data.iloc[x] == 0):
+        count_0 = count_0 + 1
+        if (gender_data.iloc[x] == 'female'):
+            count_f0 = count_f0 + 1
+        elif (gender_data.iloc[x] == 'male'):
+            count_m0 = count_m0 + 1
+        if (age_data.iloc[x] < ages_mean):
+            count_lessthanmean_0 = count_lessthanmean_0 + 1
+        else:
+            count_morethanmean_0 = count_morethanmean_0 + 1
+    if (target_data.iloc[x] == 1):
+        count_1 = count_1 + 1
+        if (gender_data.iloc[x] == 'female'):
+            count_f1 = count_f1 + 1
+        elif (gender_data.iloc[x] == 'male'):
+            count_m1 = count_m1 + 1
+        if (age_data.iloc[x] < ages_mean):
+            count_lessthanmean_1 = count_lessthanmean_1 + 1
+        else:
+            count_morethanmean_1 = count_morethanmean_1 + 1
+#count_1 = full_train.shape[0] - count_0
+print("Number of 0s = {}".format(count_0))
+print("Number of 1s = {}".format(count_1))
+print("number of females given 0s: {}".format(count_f0))
+print("number of males given 0s: {}".format(count_m0))
+print("number of females given 1s: {}".format(count_f1))
+print("number of males given 1s: {}".format(count_m1))
+print("number of youngers given 0s: {}".format(count_lessthanmean_0))
+print("number of olders given 0s: {}".format(count_morethanmean_0))
+print("number of youngers given 1s: {}".format(count_lessthanmean_1))
+print("number of olders given 1s: {}".format(count_morethanmean_1))
+
+print("Done")
+
+
+
+
+
+
+#notrec : not recommended            rec: recommended
+
+p_female_given_notrec = (count_f0/count_0)
+p_male_given_notrec = (count_m0/count_0)
+p_female_given_rec = (count_f1/count_1)
+p_male_given_rec = (count_m1)/count_1
+
+p_younger_given_notrec = (count_lessthanmean_0/count_0)
+p_older_given_notrec = (count_morethanmean_0/count_0)
+p_younger_given_rec = (count_lessthanmean_1/count_1)
+p_older_given_rec = (count_morethanmean_1/count_1)
+
+p_notrec_given_youngerfemale = p_female_given_notrec * p_younger_given_notrec * P_0
+p_notrec_given_youngermale = p_male_given_notrec * p_younger_given_notrec * P_0
+p_notrec_given_olderfemale = p_female_given_notrec * p_older_given_notrec * P_0
+p_notrec_given_oldermale = p_male_given_notrec * p_older_given_notrec * P_0
+p_rec_given_youngerfemale = p_female_given_notrec * p_younger_given_notrec * P_1
+p_rec_given_youngermale = p_male_given_notrec * p_younger_given_notrec * P_1
+p_rec_givenolderfemale = p_female_given_notrec * p_older_given_notrec * P_1
+p_rec_givenoldermale = p_male_given_notrec * p_older_given_notrec * P_1
+
+print("P(0|young and female) = {}".format(p_notrec_given_youngerfemale))
+print("P(0|young and male) = {}".format(p_notrec_given_youngermale))
+print("P(0|old and female) = {}".format(p_notrec_given_olderfemale))
+print("P(0|old and male) = {}".format(p_notrec_given_oldermale))
+print("P(1|young and female) = {}".format(p_rec_given_youngerfemale))
+print("P(1|young and male) = {}".format(p_rec_given_youngermale))
+print("P(1|old and female) = {}".format(p_rec_given_olderfemale))
+print("P(1|old and male) = {}".format(p_rec_given_oldermale))
