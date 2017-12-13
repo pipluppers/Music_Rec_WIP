@@ -1,0 +1,55 @@
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt
+import math
+
+# Used to load the data files on Kaggle
+from subprocess import check_output
+
+# Load datasets
+train = pd.read_csv("../input/train.csv")
+test = pd.read_csv("../input/test.csv")
+songs = pd.read_csv("../input/songs.csv")
+members = pd.read_csv("../input/members.csv")
+
+# Merge train with songs and members
+train_plus_members = train.merge(members, on='msno',how='left')
+full_train = train_plus_members.merge(songs, on='song_id', how='left')
+#full_train.head()
+
+# Define functions
+
+def mean(nums):
+    return sum(nums)/float(len(nums))
+print("Defined the mean")
+
+def std(nums):
+    avg = mean(nums)
+    variance = sum([pow(x - avg,2) for x in nums]) / float(len(nums)-1)
+    return math.sqrt(variance)
+print("Defined standard dev")
+
+# P(X | C)
+def x_given_y(x, mean, std):
+    denom = np.sqrt(2* np.pi * std**2)
+    ee = (x - mean) / (2 * std**2)
+    return math.exp(-ee) / denom
+    
+# Maximum A-posteriori
+# P(C | X) = P(C) * P(X | C)
+# Parameters is P(C) and the matrix of all P(Xi | C)
+def naive_bayes_maxa(prob_of_class, probs_given_class):
+    prob = 1
+    # P(Xi | C)
+    for x in len(probs_given_class):
+        prob = prob*probs_given_class[x]
+    return prob_of_class * prob
+
+def choose(x , y):
+    if (x<y):
+        return "Recommend"
+    elif (x>y):
+        return "Don't recommend"
+    else:
+        return "Both equally likely"
+
